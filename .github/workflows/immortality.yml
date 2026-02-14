@@ -2,7 +2,6 @@ name: GitHub Workflow Immortality
 
 on:
   schedule:
-    # run once a month on the first day of the month at 00:20 UTC
     - cron: '20 0 1 * *'
   workflow_dispatch: {}
 
@@ -10,12 +9,14 @@ jobs:
   keepalive:
     name: GitHub Workflow Immortality
     runs-on: ubuntu-latest
+    # 1. 移除 permissions: {}，或者改为 write
     permissions:
-      actions: write    # 显式开启 Actions 写权限
-      contents: write   # 显式开启内容写权限
+      actions: write
+      contents: write
     steps:
       - name: Keep cronjob based triggers of GitHub workflows alive
         uses: PhrozenByte/gh-workflow-immortality@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # 2. 将 secret 改为 token (该 Action 的标准参数名)
+          token: ${{ secrets.ACTIONS_TRIGGER_PAT }}
           repos: ${{ github.repository }}
